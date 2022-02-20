@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "skyland",
+  "version": "${version}",
+  "name": "SkyLand",
+  "description": "Empty world generation with new ways to obtain resources",
+  "authors": [
+    "DubheStudio"
+  ],
+  "contact": {
+    "sources": "https://github.com/Dubhe-Studio/AnvilCraft-SkyLandMod",
+    "issues": "https://github.com/Dubhe-Studio/AnvilCraft-SkyLandMod/issues"
+  },
+  "license": "GUN GPL 3.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.dubhe.skyland.SkyLandExtension"
+    ],
+    "client": [
+      "dev.dubhe.skyland.SkyLandClient"
+    ]
+  },
+  "mixins": [
+    "skyland.mixins.json"
+  ],
+  "accessWidener": "skyland.accesswidener",
+  "depends": {
+    "fabricloader": "*"
+  },
+  "recommends": {
+    "fabric-resource-loader-v0": "*"
+  }
+}
