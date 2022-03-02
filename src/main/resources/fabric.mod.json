@@ -15,6 +15,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+      "dev.dubhe.skyland.SkyLand"
     ],
     "client": [
       "dev.dubhe.skyland.SkyLandClient"
