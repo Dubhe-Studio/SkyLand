@@ -3,7 +3,7 @@
   "id": "skyland",
   "version": "${version}",
   "name": "SkyLand",
-  "description": "Empty world generation with new ways to obtain resources",
+  "description": "Empty world generation",
   "authors": [
     "DubheStudio"
   ],

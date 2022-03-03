@@ -12,8 +12,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class SkyLandGeneratorType extends GeneratorType {
-//    private static final GeneratorType SKYLAND = new SkyLandGeneratorType(SkyLand.ID);
-
     public SkyLandGeneratorType(String translationKeySuffix) {
         super(translationKeySuffix);
     }
@@ -29,10 +27,8 @@ public class SkyLandGeneratorType extends GeneratorType {
         );
     }
 
-    static {
+    public static void register() {
         VALUES.add(new SkyLandGeneratorType(SkyLand.ID));
     }
-
-    public static void register() {}
 
 }
