@@ -3,7 +3,8 @@
   "package": "dev.dubhe.skyland.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "GeneratorOptionsMixin"
+    "GeneratorOptionsMixin",
+    "RegistryMixin"
   ],
   "client": [],
   "injectors": {

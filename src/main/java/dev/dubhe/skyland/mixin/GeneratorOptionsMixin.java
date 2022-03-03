@@ -1,7 +1,7 @@
 package dev.dubhe.skyland.mixin;
 
-import dev.dubhe.skyland.SkyLand;
 import dev.dubhe.skyland.generator.SkyLandGeneratorSettings;
+import dev.dubhe.skyland.generator.SkyLandGeneratorType;
 import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -21,7 +21,7 @@ public class GeneratorOptionsMixin {
 
     @Inject(method = "fromProperties", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private static void addSkyLandGeneratorOptions(DynamicRegistryManager registryManager, ServerPropertiesHandler.WorldGenProperties worldGenProperties, CallbackInfoReturnable<GeneratorOptions> cir, long seed, Registry<DimensionType> registry, Registry<Biome> registry2, Registry<StructureSet> registry3, Registry<DimensionOptions> registry4) {
-        if (SkyLand.ID.equals(worldGenProperties.levelType())) {
+        if (SkyLandGeneratorType.ID.equals(worldGenProperties.levelType())) {
             cir.setReturnValue(new GeneratorOptions(seed, worldGenProperties.generateStructures(), false, SkyLandGeneratorSettings.getSkyLandRegistry(registryManager, seed)));
         }
     }

@@ -14,9 +14,6 @@
   "license": "GUN GPL 3.0",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "dev.dubhe.skyland.SkyLand"
-    ],
     "client": [
       "dev.dubhe.skyland.SkyLandClient"
     ]
@@ -26,9 +23,10 @@
   ],
   "accessWidener": "skyland.accesswidener",
   "depends": {
+    "minecraft": "1.18.2",
     "fabricloader": "*"
   },
-  "recommends": {
-    "fabric-resource-loader-v0": "*"
+  "suggests": {
+    "another-mod": "*"
   }
 }

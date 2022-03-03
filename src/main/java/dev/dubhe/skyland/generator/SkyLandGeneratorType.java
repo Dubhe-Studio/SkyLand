@@ -1,6 +1,5 @@
 package dev.dubhe.skyland.generator;
 
-import dev.dubhe.skyland.SkyLand;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
@@ -12,6 +11,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class SkyLandGeneratorType extends GeneratorType {
+    public static final String ID = "skyland";
+
     public SkyLandGeneratorType(String translationKeySuffix) {
         super(translationKeySuffix);
     }
@@ -28,7 +29,7 @@ public class SkyLandGeneratorType extends GeneratorType {
     }
 
     public static void register() {
-        VALUES.add(new SkyLandGeneratorType(SkyLand.ID));
+        VALUES.add(new SkyLandGeneratorType(ID));
     }
 
 }
