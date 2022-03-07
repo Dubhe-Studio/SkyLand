@@ -35,8 +35,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class SkyLandChunkGenerator extends NoiseChunkGenerator {
-    private final long seed;
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> structuresRegistry;
+    private final long seed;
 
     public static final Codec<SkyLandChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryOps.createRegistryCodec(Registry.STRUCTURE_SET_KEY).forGetter(generator -> generator.field_37053),
@@ -51,7 +51,6 @@ public class SkyLandChunkGenerator extends NoiseChunkGenerator {
         this.seed = seed;
         this.structuresRegistry = structuresRegistry;
     }
-
 
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
