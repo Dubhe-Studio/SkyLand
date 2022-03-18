@@ -28,15 +28,11 @@ public class SpawnHelperMixin {
     )
     private static void spawnEntities(SpawnGroup group, ServerWorld world, WorldChunk chunk, SpawnHelper.Checker checker, SpawnHelper.Runner runner, CallbackInfo ci) {
         if (world.getGameRules().getBoolean(SkyLand.LC)) {
-            boolean check = true;
-            for(int i = world.getTopY() - 16; i >= world.getBottomY(); i -= 16) {
+            for (int i = chunk.getBottomY(); i < chunk.getTopY(); i += 16) {
                 ChunkSection chunkSection = chunk.getSectionArray()[chunk.getSectionIndex(i)];
-                if (!check || chunkSection != null && !chunkSection.isEmpty()) {
-                    check = false;
-                    if (!(world.getRandom().nextFloat() > 0.24F)) {
-                        BlockPos blockPos = getRandomPosInChunk(world, chunk).add(0, i, 0);
-                        spawnEntitiesInChunk(group, world, chunk, blockPos, checker, runner);
-                    }
+                if (chunkSection != null && !chunkSection.isEmpty()) {
+                    BlockPos blockPos = getRandomPosInChunk(world, chunk).add(0, i, 0);
+                    spawnEntitiesInChunk(group, world, chunk, blockPos, checker, runner);
                 }
             }
             ci.cancel();
