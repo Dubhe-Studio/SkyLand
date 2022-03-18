@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/${{ steps.getjar.outputs.jarname }}
+          asset_path: build/libs/${{ steps.getjar.outputs.jarname }}
           asset_name: ${{ steps.getjar.outputs.jarname }}
           asset_content_type: application/java-archive
       - name: Publish to maven
