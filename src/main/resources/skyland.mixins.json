@@ -6,7 +6,8 @@
     "EnderDragonFightMixin",
     "GeneratorOptionsMixin",
     "RegistryMixin",
-    "SpawnHelperMixin"
+    "SpawnHelperMixin",
+    "WanderingTraderManagerMixin"
   ],
   "client": [],
   "injectors": {

@@ -1,4 +1,5 @@
 {
   "generator.skyland": "SkyLand",
-  "gamerule.qnmdLC": "qnmdLC"
+  "gamerule.qnmdLC": "qnmdLC",
+  "gamerule.chieftainMode": "Chieftain Mode"
 }

@@ -1,4 +1,5 @@
 {
   "generator.skyland": "空島",
-  "gamerule.qnmdLC": "忽略LC值影響"
+  "gamerule.qnmdLC": "忽略LC值影響",
+  "gamerule.chieftainMode": "非酋模式"
 }
