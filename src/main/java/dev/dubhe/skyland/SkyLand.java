@@ -1,13 +1,19 @@
 package dev.dubhe.skyland;
 
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.world.GameRules;
+import dev.dubhe.skyland.generator.SkyLandGeneratorType;
+import net.minecraft.world.level.GameRules;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.Mod;
 
-public class SkyLand implements ModInitializer {
-    public static final GameRules.Key<GameRules.BooleanRule> LC = GameRules.register("qnmdLC", GameRules.Category.MOBS, GameRules.BooleanRule.create(false));
-    public static final GameRules.Key<GameRules.BooleanRule> CHIEFTAIN = GameRules.register("chieftainMode", GameRules.Category.MOBS, GameRules.BooleanRule.create(false));
+@Mod(Skyland.ID)
+public class Skyland {
+    public static final String ID = "skyland";
+    public static final GameRules.Key<GameRules.BooleanValue> LC = GameRules.register("qnmdLC", GameRules.Category.MOBS, GameRules.BooleanValue.create(false));
+    public static final GameRules.Key<GameRules.BooleanValue> CHIEFTAIN = GameRules.register("chieftainMode", GameRules.Category.MOBS, GameRules.BooleanValue.create(false));
 
-    @Override
-    public void onInitialize() {
+    @OnlyIn(Dist.CLIENT)
+    public Skyland() {
+        SkyLandGeneratorType.register();
     }
 }

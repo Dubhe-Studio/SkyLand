@@ -1,58 +1,58 @@
 package dev.dubhe.skyland.generator;
 
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.structure.StructureSet;
-import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource.Preset;
-import net.minecraft.world.biome.source.TheEndBiomeSource;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource.Preset;
+import net.minecraft.world.level.biome.TheEndBiomeSource;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 public class SkyLandGeneratorSettings {
-    public static SimpleRegistry<DimensionOptions> getSkyLandRegistry(DynamicRegistryManager drm, long seed) {
-        SimpleRegistry<DimensionOptions> dimensionOptionsRegistry = new SimpleRegistry<>(Registry.DIMENSION_KEY, Lifecycle.experimental(), null);
+    public static MappedRegistry<LevelStem> getSkyLandRegistry(RegistryAccess drm, long seed) {
+        MappedRegistry<LevelStem> dimensionOptionsRegistry = new MappedRegistry<>(Registry.LEVEL_STEM_REGISTRY, Lifecycle.experimental(), null);
 
-        Registry<DimensionType> dimensionTypeRegistry = drm.get(Registry.DIMENSION_TYPE_KEY);
-        Registry<StructureSet> structureSets = drm.get(Registry.STRUCTURE_SET_KEY);
-        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseParameters = drm.get(Registry.NOISE_WORLDGEN);
-        Registry<Biome> biomes = drm.get(Registry.BIOME_KEY);
-        Registry<ChunkGeneratorSettings> chunkGeneratorSettings = drm.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+        Registry<DimensionType> dimensionTypeRegistry = drm.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        Registry<StructureSet> structureSets = drm.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+        Registry<NormalNoise.NoiseParameters> noiseParameters = drm.registryOrThrow(Registry.NOISE_REGISTRY);
+        Registry<Biome> biomes = drm.registryOrThrow(Registry.BIOME_REGISTRY);
+        Registry<NoiseGeneratorSettings> chunkGeneratorSettings = drm.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY);
 
-        dimensionOptionsRegistry.add(DimensionOptions.OVERWORLD, new DimensionOptions(
-                dimensionTypeRegistry.getOrCreateEntry(DimensionType.OVERWORLD_REGISTRY_KEY),
+        dimensionOptionsRegistry.register(LevelStem.OVERWORLD, new LevelStem(
+                dimensionTypeRegistry.getOrCreateHolder(DimensionType.OVERWORLD_LOCATION),
                 new SkyLandChunkGenerator(
                         structureSets,
                         noiseParameters,
-                        Preset.OVERWORLD.getBiomeSource(biomes, true),
+                        Preset.OVERWORLD.biomeSource(biomes, true),
                         seed,
-                        chunkGeneratorSettings.getOrCreateEntry(ChunkGeneratorSettings.OVERWORLD)
+                        chunkGeneratorSettings.getOrCreateHolder(NoiseGeneratorSettings.OVERWORLD)
                 )
         ), Lifecycle.stable());
 
-        dimensionOptionsRegistry.add(DimensionOptions.NETHER, new DimensionOptions(
-                dimensionTypeRegistry.getOrCreateEntry(DimensionType.THE_NETHER_REGISTRY_KEY),
+        dimensionOptionsRegistry.register(LevelStem.NETHER, new LevelStem(
+                dimensionTypeRegistry.getOrCreateHolder(DimensionType.NETHER_LOCATION),
                 new SkyLandChunkGenerator(
                         structureSets,
                         noiseParameters,
-                        Preset.NETHER.getBiomeSource(biomes, true),
+                        Preset.NETHER.biomeSource(biomes, true),
                         seed,
-                        chunkGeneratorSettings.getOrCreateEntry(ChunkGeneratorSettings.NETHER)
+                        chunkGeneratorSettings.getOrCreateHolder(NoiseGeneratorSettings.NETHER)
                 )
         ), Lifecycle.stable());
 
-        dimensionOptionsRegistry.add(DimensionOptions.END, new DimensionOptions(
-                dimensionTypeRegistry.getOrCreateEntry(DimensionType.THE_END_REGISTRY_KEY),
+        dimensionOptionsRegistry.register(LevelStem.END, new LevelStem(
+                dimensionTypeRegistry.getOrCreateHolder(DimensionType.END_LOCATION),
                 new SkyLandChunkGenerator(
                         structureSets,
                         noiseParameters,
                         new TheEndBiomeSource(biomes, seed),
                         seed,
-                        chunkGeneratorSettings.getOrCreateEntry(ChunkGeneratorSettings.END)
+                        chunkGeneratorSettings.getOrCreateHolder(NoiseGeneratorSettings.END)
                 )
         ), Lifecycle.stable());
         return dimensionOptionsRegistry;

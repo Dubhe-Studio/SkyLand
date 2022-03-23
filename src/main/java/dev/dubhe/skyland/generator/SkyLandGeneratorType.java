@@ -1,41 +1,47 @@
 package dev.dubhe.skyland.generator;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.world.GeneratorType;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
-import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import dev.dubhe.skyland.Skyland;
+import net.minecraft.client.gui.screens.worldselection.WorldPreset;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@Environment(EnvType.CLIENT)
-public class SkyLandGeneratorType extends GeneratorType {
+@OnlyIn(Dist.CLIENT)
+public class SkyLandGeneratorType extends WorldPreset {
     public static final String ID = "skyland";
 
     public SkyLandGeneratorType(String translationKeySuffix) {
-        super(translationKeySuffix);
+        super(Component.nullToEmpty(translationKeySuffix));
     }
 
     @Override
-    protected ChunkGenerator getChunkGenerator(DynamicRegistryManager registryManager, long seed) {
+    protected ChunkGenerator generator(RegistryAccess registryManager, long seed) {
         return new SkyLandChunkGenerator(
-                registryManager.get(Registry.STRUCTURE_SET_KEY),
-                registryManager.get(Registry.NOISE_WORLDGEN),
-                MultiNoiseBiomeSource.Preset.OVERWORLD.getBiomeSource(registryManager.get(Registry.BIOME_KEY), true),
+                registryManager.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY),
+                registryManager.registryOrThrow(Registry.NOISE_REGISTRY),
+                MultiNoiseBiomeSource.Preset.OVERWORLD.biomeSource(registryManager.registryOrThrow(Registry.BIOME_REGISTRY), true),
                 seed,
-                registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getOrCreateEntry(ChunkGeneratorSettings.OVERWORLD)
+                registryManager.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getOrCreateHolder(NoiseGeneratorSettings.OVERWORLD)
         );
     }
 
     @Override
-    public GeneratorOptions createDefaultOptions(DynamicRegistryManager drm, long seed, boolean generateStructures, boolean bonusChest) {
-        return new GeneratorOptions(seed, generateStructures, bonusChest, SkyLandGeneratorSettings.getSkyLandRegistry(drm, seed));
+    public WorldGenSettings create(RegistryAccess drm, long seed, boolean generateStructures, boolean bonusChest) {
+        return new WorldGenSettings(seed, generateStructures, bonusChest, SkyLandGeneratorSettings.getSkyLandRegistry(drm, seed));
     }
 
     public static void register() {
-        VALUES.add(new SkyLandGeneratorType(ID));
+        PRESETS.add(new SkyLandGeneratorType(ID));
     }
 
 }
