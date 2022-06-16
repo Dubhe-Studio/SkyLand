@@ -1,6 +1,6 @@
 package dev.dubhe.skyland.mixin;
 
-import dev.dubhe.skyland.generator.SkyLandChunkGenerator;
+import dev.dubhe.skyland.SkyLandChunkGenerator;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;

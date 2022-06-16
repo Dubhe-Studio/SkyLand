@@ -26,7 +26,7 @@
   ],
   "accessWidener": "skyland.accesswidener",
   "depends": {
-    "minecraft": "1.18.2",
+    "minecraft": ">=1.19",
     "fabricloader": "*"
   },
   "suggests": {

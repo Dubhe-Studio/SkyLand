@@ -1,4 +1,4 @@
-package dev.dubhe.skyland.generator;
+package dev.dubhe.skyland;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,6 +12,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.math.random.ChunkRandom;
+import net.minecraft.util.math.random.RandomSeed;
+import net.minecraft.util.math.random.Xoroshiro128PlusPlusRandom;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
@@ -27,28 +30,23 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.random.ChunkRandom;
-import net.minecraft.world.gen.random.RandomSeed;
-import net.minecraft.world.gen.random.Xoroshiro128PlusPlusRandom;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class SkyLandChunkGenerator extends NoiseChunkGenerator {
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> structuresRegistry;
-    private final long seed;
 
     public static final Codec<SkyLandChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            RegistryOps.createRegistryCodec(Registry.STRUCTURE_SET_KEY).forGetter(generator -> generator.field_37053),
-            RegistryOps.createRegistryCodec(Registry.NOISE_WORLDGEN).forGetter(generator -> generator.structuresRegistry),
+            RegistryOps.createRegistryCodec(Registry.STRUCTURE_SET_KEY).forGetter(generator -> generator.structureSetRegistry),
+            RegistryOps.createRegistryCodec(Registry.NOISE_KEY).forGetter(generator -> generator.structuresRegistry),
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
-            Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.seed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings)
     ).apply(instance, instance.stable(SkyLandChunkGenerator::new)));
 
-    public SkyLandChunkGenerator(Registry<StructureSet> noiseRegistry, Registry<DoublePerlinNoiseSampler.NoiseParameters> structuresRegistry, BiomeSource biomeSource, long seed, RegistryEntry<ChunkGeneratorSettings> settings) {
-        super(noiseRegistry, structuresRegistry, biomeSource, seed, settings);
-        this.seed = seed;
+    public SkyLandChunkGenerator(Registry<StructureSet> noiseRegistry, Registry<DoublePerlinNoiseSampler.NoiseParameters> structuresRegistry, BiomeSource biomeSource, RegistryEntry<ChunkGeneratorSettings> settings) {
+        super(noiseRegistry, structuresRegistry, biomeSource, settings);
         this.structuresRegistry = structuresRegistry;
     }
 
@@ -58,17 +56,12 @@ public class SkyLandChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public ChunkGenerator withSeed(long seed) {
-        return new SkyLandChunkGenerator(this.field_37053, this.structuresRegistry, this.biomeSource.withSeed(seed), seed, this.settings);
-    }
-
-    @Override
-    public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
+    public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world, NoiseConfig noiseConfig) {
         return new VerticalBlockSample(world.getBottomY(), new BlockState[0]);
     }
 
     @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -79,13 +72,13 @@ public class SkyLandChunkGenerator extends NoiseChunkGenerator {
 
         structureAccessor.getStructureStarts(
                 ChunkSectionPos.from(pos),
-                world.getRegistryManager().get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).get(new Identifier("minecraft:stronghold"))
+                world.getRegistryManager().get(Registry.STRUCTURE_KEY).get(new Identifier("minecraft:stronghold"))
         ).forEach(structureStart -> {
             for (StructurePiece piece : structureStart.getChildren()) {
                 if (piece.getType() == StructurePieceType.STRONGHOLD_PORTAL_ROOM) {
                     if (piece.intersectsChunk(chunkPos, 0)) {
                         ChunkRandom random = new ChunkRandom(new Xoroshiro128PlusPlusRandom(RandomSeed.getSeed()));
-                        random.setCarverSeed(seed, chunkPos.x, chunkPos.z);
+                        random.setCarverSeed(world.getSeed(), chunkPos.x, chunkPos.z);
                     }
                 }
             }
@@ -93,7 +86,7 @@ public class SkyLandChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public void buildSurface(ChunkRegion region, StructureAccessor structures, Chunk chunk) {
+    public void buildSurface(ChunkRegion region, StructureAccessor structures, NoiseConfig noiseConfig, Chunk chunk) {
     }
 
     @Override
@@ -101,7 +94,7 @@ public class SkyLandChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public void carve(ChunkRegion chunkRegion, long seed, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver generationStep) {
+    public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig noiseConfig, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver generationStep) {
     }
 
 }
