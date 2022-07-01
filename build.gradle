@@ -3,8 +3,12 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+archivesBaseName = 'SkyLand'
+version = "${project.mod_version}-mc${project.mc_version}"
 group = project.maven_group
+
+if (project.build_number != 'undefined') version += "+build.${project.build_number}"
+
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -23,10 +27,10 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.mod_version
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.mod_version
     }
 }
 
@@ -40,7 +44,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.name}" }
+        rename { "${it}_$archivesBaseName" }
     }
 }
 
